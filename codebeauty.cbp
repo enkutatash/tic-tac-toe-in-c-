@@ -1,40 +1,78 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<CodeBlocks_project_file>
-	<FileVersion major="1" minor="6" />
-	<Project>
-		<Option title="codebeauty" />
-		<Option pch_mode="2" />
-		<Option compiler="gcc" />
-		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/codebeauty" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-g" />
-				</Compiler>
-			</Target>
-			<Target title="Release">
-				<Option output="bin/Release/codebeauty" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
-			</Target>
-		</Build>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-fexceptions" />
-		</Compiler>
-		<Unit filename="main.cpp" />
-		<Extensions>
-			<lib_finder disable_auto="1" />
-		</Extensions>
-	</Project>
-</CodeBlocks_project_file>
+#include<iostream>
+#include<ctime>
+#include<cstdlib>
+using namespace std;
+char board[3][3]={{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+char current_play;
+int current_player;
+void drawboard(){
+cout<<" "<<board[0][0]<<" | "<<board[0][1]<<" | "<<board[0][2]<<endl;
+cout<<" "<<"---------"<<endl;
+cout<<" "<<board[1][0]<<" | "<<board[1][1]<<" | "<<board[1][2]<<endl;
+cout<<" "<<"---------"<<endl;
+cout<<" "<<board[2][0]<<" | "<<board[2][1]<<" | "<<board[2][2]<<endl;
+}
+bool placement(int slot){
+    int row=slot/3,col=(slot%3)-1;
+if(slot%3==0){
+    col=2,row-=1;
+}
+if(board[row][col]!='x'&&board[row][col]!='o')
+{board[row][col]=current_play;
+return true;
+}
+else {
+    return false;
+}
+}
+int winner(){
+   for(int i=0;i<3;i++){
+    if(board[i][0]==board[i][1]&&board[i][1]==board[i][2]) return current_player;
+    if(board[0][i]==board[1][i]&&board[1][i]==board[2][i]) return current_player;
+   }
+if (board[0][0]==board[1][1]&&board[1][1]==board[2][2]) return current_player;
+if (board[0][2]==board[1][1]&&board[1][1]==board[2][0]) return current_player;
+return 0;
+}
+void swaper(){
+if(current_play=='x') current_play='o';
+else current_play='x';
+if(current_player==1) current_player=2;
+else current_player=1;
+}
+void game(){
+    char choice;
+cout<<"X or O ";cin>>current_play;
+
+current_player=1;
+for(int i=0;i<9;i++){
+    cout<<"player "<<current_player<<endl;
+    int slot;cout<<"enter the slot ";
+    if(current_player==2){
+    srand(time(0));
+    slot=(rand()%9)+1;
+    }
+    else cin>>slot;
+     if(slot<1 || slot>9){
+       i--;
+       cout<<"you entered invalid slot please enter again\n";
+       continue;
+    }
+    if(!placement(slot)){
+       i--;
+       cout<<"you entered occupied slot please enter again\n";
+       continue;
+    }
+    cout<<endl;
+    drawboard();
+    if(winner()) {cout<<"game ended winner is player "<<winner(); break;}
+
+    swaper();
+}
+if(!winner()){
+    cout<<"game losted";
+}
+}
+int main(){
+    game();
+}
